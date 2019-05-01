@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../Build/MSBuild/default.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Artifacts/Artifacts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dolittle.SDK.Commands" Version="2.*" />
+    <PackageReference Include="Dolittle.Runtime.Events" Version="2.*" />
+    <PackageReference Include="Dolittle.Runtime.Queries" Version="2.*" />
+    <PackageReference Include="Dolittle.DependencyInversion" Version="2.*" />
+    <PackageReference Include="Dolittle.Types" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
+  </ItemGroup>
+</Project>
