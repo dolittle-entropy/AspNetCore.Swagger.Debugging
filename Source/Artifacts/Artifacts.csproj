@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dolittle.SDK.Applications.Configuration" Version="2.*" />
-    <PackageReference Include="Dolittle.SDK.Artifacts.Configuration" Version="2.*" />
+    <PackageReference Include="Dolittle.SDK.Applications.Configuration" Version="3.*" />
+    <PackageReference Include="Dolittle.SDK.Artifacts.Configuration" Version="3.*" />
   </ItemGroup>
 </Project>
