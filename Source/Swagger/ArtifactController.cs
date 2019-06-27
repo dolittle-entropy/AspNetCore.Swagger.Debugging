@@ -131,7 +131,7 @@ namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
 
             try
             {
-                result = values[0].ParseTo(targetType);
+                result = ParseStringTo(targetType, values[0]);
                 if (!IsDefaultValue(targetType, result))
                 {
                     return true;
@@ -141,7 +141,7 @@ namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
 
             try
             {
-                result = values.ToString().ParseTo(targetType);
+                result = ParseStringTo(targetType, values.ToString());
                 return !IsDefaultValue(targetType, result);
             }
             catch {}
@@ -166,6 +166,17 @@ namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
                 return IsDefaultValue(type.GetConceptValueType(), value);
             }
             return value == null;
+        }
+
+        object ParseStringTo(Type type, string value)
+        {
+            if (type == typeof(DateTimeOffset))
+            {
+                // It seems like the PropertyBag expects this value somewhere else
+                return DateTimeOffset.Parse(value).ToUnixTimeMilliseconds();
+            }
+
+            return value.ParseTo(type);
         }
     }
 }
