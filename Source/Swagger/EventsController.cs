@@ -5,7 +5,7 @@
 
 using System.Linq;
 using Dolittle.AspNetCore.Debugging.Events;
-using Dolittle.AspNetCore.Swagger.Debugging.Artifacts;
+using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Concepts;
 using Dolittle.Events;
 using Dolittle.Logging;
@@ -14,7 +14,7 @@ using Dolittle.Runtime.Events;
 using Dolittle.Tenancy;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
+namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
     /// An implementation of an <see cref="ArtifactController{IEvent}"/> for handling Events

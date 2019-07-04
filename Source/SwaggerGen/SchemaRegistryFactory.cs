@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using OriginalSchemaRegistryFactory = Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistryFactory;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen
+namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
     /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistryFactory" />

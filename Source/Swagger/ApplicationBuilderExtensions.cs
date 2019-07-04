@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 using System;
-using Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen;
+using Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen;
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging
+namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
     /// Extensions for ApplicationBuilder

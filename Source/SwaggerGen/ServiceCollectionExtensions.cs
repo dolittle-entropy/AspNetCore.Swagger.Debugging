@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging
+namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
     /// Extensions to <see cref="IServiceCollection"/> for the Dolittle Swagger debugging tools
@@ -29,8 +29,8 @@ namespace Dolittle.AspNetCore.Swagger.Debugging
         )
         {
             services.AddSwaggerGen(setupAction);
-            services.AddTransient<ISwaggerProvider, Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen.SwaggerGenerator>();
-            services.AddTransient<ISchemaRegistryFactory, Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen.SchemaRegistryFactory>();
+            services.AddTransient<ISwaggerProvider, Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen.SwaggerGenerator>();
+            services.AddTransient<ISchemaRegistryFactory, Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen.SchemaRegistryFactory>();
             return services;
         }
     }

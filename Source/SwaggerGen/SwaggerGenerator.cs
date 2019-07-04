@@ -15,7 +15,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using OriginalSwaggerGenerator = Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen
+namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
     /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>

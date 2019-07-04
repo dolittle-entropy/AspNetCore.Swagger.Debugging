@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen
+namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
     /// Represents a generator that generates a <see cref="SwaggerDocument"/> for a Dolittle artifact

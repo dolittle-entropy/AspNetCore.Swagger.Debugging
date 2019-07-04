@@ -7,12 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Dolittle.AspNetCore.Swagger.Debugging.Artifacts;
+using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Tenancy;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen
+namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
     /// An implementation of <see cref="IDocumentGenerator{T}"/>

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using Dolittle.Artifacts;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.Artifacts
+namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
 {
     /// <summary>
     /// Represents a mapper that maps artifacts to paths and vice versa, for use with Swagger debugging tools

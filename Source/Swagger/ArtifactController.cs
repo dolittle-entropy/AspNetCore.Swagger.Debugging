@@ -7,7 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Dolittle.AspNetCore.Swagger.Debugging.Artifacts;
+using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Collections;
 using Dolittle.Concepts;
 using Dolittle.Logging;
@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
+namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
     /// Represents a controller that handles posts of artifacts by fully qualified name encoded in the path

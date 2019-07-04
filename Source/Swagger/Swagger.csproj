@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Dolittle.AspNetCore.Swagger.Debugging.Swagger</AssemblyName>
+    <AssemblyName>Dolittle.AspNetCore.Debugging.Swagger</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

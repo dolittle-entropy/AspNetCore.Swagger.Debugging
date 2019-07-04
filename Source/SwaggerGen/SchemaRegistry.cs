@@ -9,7 +9,7 @@ using Dolittle.Types;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.SwaggerGen
+namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
     /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistry" />

@@ -8,7 +8,7 @@ using Dolittle.Artifacts;
 using Dolittle.AspNetCore.Debugging.Commands;
 using Dolittle.AspNetCore.Debugging.Events;
 using Dolittle.AspNetCore.Debugging.Queries;
-using Dolittle.AspNetCore.Swagger.Debugging.Artifacts;
+using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Commands;
 using Dolittle.Concepts;
 using Dolittle.Events;
@@ -20,7 +20,7 @@ using Dolittle.Serialization.Json;
 using Dolittle.Tenancy;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.Swagger
+namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
     /// An implementation of an <see cref="ArtifactController{ICommand}"/> for handling Queries

@@ -12,7 +12,7 @@ using Dolittle.Artifacts;
 using Dolittle.Artifacts.Configuration;
 using Dolittle.Types;
 
-namespace Dolittle.AspNetCore.Swagger.Debugging.Artifacts
+namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
 {
     /// <summary>
     /// Implementation of an <see cref="IArtifactMapper{T}"/>
