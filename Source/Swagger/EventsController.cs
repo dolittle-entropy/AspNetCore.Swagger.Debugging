@@ -17,10 +17,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactController{IEvent}"/> for handling Events
+    /// An implementation of an <see cref="ArtifactControllerBase{IEvent}"/> for handling Events
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Events")]
-    public class EventsController : ArtifactController<IEvent>
+    public class EventsController : ArtifactControllerBase<IEvent>
     {
         readonly IEventInjector _eventInjector;
 
@@ -42,12 +42,21 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
             _eventInjector = eventInjector;
         }
 
-        /// <inheritdoc/>
-        protected override IActionResult HandleReceivedArifact(TenantId tenantId, IEvent artifact)
+        /// <summary>
+        /// The HTTP method handler
+        /// </summary>
+        /// <param name="path">The fully qualified type name of the event encoded as a path</param>
+        [HttpPost("{*path}")]
+        public IActionResult Handle([FromRoute] string path)
         {
-            var eventSourceId = HttpContext.Request.Form["EventSourceId"].First().ParseTo(typeof(EventSourceId)) as EventSourceId;
-            _eventInjector.InjectEvent(tenantId, eventSourceId, artifact);
-            return Ok();
+            if (TryResolveTenantAndArtifact(path, HttpContext.Request.Form.ToDictionary(), out var tenantId, out var @event))
+            {
+                var eventSourceId = HttpContext.Request.Form["EventSourceId"].First().ParseTo(typeof(EventSourceId)) as EventSourceId;
+                _eventInjector.InjectEvent(tenantId, eventSourceId, @event);
+                return Ok();
+            }
+            
+            return new BadRequestResult();
         }
     }
 }

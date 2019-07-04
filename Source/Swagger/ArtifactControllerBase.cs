@@ -22,22 +22,22 @@ using Microsoft.Extensions.Primitives;
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// Represents a controller that handles posts of artifacts by fully qualified name encoded in the path
+    /// Represents a controller that handles artifacts by fully qualified name encoded in the path
     /// </summary>
     /// <typeparam name="T">Type of artifact to handle</typeparam>
-    public abstract class ArtifactController<T> : ControllerBase where T : class
+    public abstract class ArtifactControllerBase<T> : ControllerBase where T : class
     {
         readonly ILogger _logger;
         readonly IArtifactMapper<T> _artifactTypes;
         readonly IObjectFactory _objectFactory;
 
         /// <summary>
-        /// Instanciates a new <see cref="ArtifactController{T}"/>
+        /// Instanciates a new <see cref="ArtifactControllerBase{T}"/>
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> to use</param>
         /// <param name="artifactTypes"></param>
         /// <param name="objectFactory"></param>
-        protected ArtifactController(
+        protected ArtifactControllerBase(
             ILogger logger,
             IArtifactMapper<T> artifactTypes,
             IObjectFactory objectFactory
@@ -49,30 +49,25 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         }
 
         /// <summary>
-        /// The method that will be called when an artifact has been recieved and deserialized
+        /// Tries to resolve tenant and artifact based on the incoming request
         /// </summary>
-        /// <param name="tenantId">The <see cref="TenantId"/> to use for the execution context</param>
-        /// <param name="artifact">The deserialized artifact</param>
-        protected abstract IActionResult HandleReceivedArifact(TenantId tenantId, T artifact);
-
-        /// <summary>
-        /// The HTTP method handler
-        /// </summary>
-        /// <param name="path">The fully qualified type name of the artifact encoded as a path</param>
-        [HttpPost("{*path}")]
-        public IActionResult Handle([FromRoute] string path)
+        /// <param name="path">The request path</param>
+        /// <param name="request">The request data</param>
+        /// <param name="tenant">The resolved tenant</param>
+        /// <param name="artifact">The created artifact</param>
+        /// <returns>Whether the resolution worked</returns>
+        protected bool TryResolveTenantAndArtifact(string path, IDictionary<string, StringValues> request, out TenantId tenant, out T artifact)
         {
             if (path[0] != '/') path = $"/{path}";
 
             var artifactType = _artifactTypes.GetTypeFor(path);
             var properties = new NullFreeDictionary<string, object>();
-            var postForm = HttpContext.Request.Form;
 
-            var tenantId = postForm["TenantId"].First().ParseTo(typeof(TenantId)) as TenantId;
+            tenant = request["TenantId"].First().ParseTo(typeof(TenantId)) as TenantId;
 
             foreach (var property in artifactType.GetProperties())
             {
-                if (postForm.TryGetValue(property.Name, out var values))
+                if (request.TryGetValue(property.Name, out var values))
                 {
                     if (TryConvertFormValuesTo(property.PropertyType, values, out var result))
                     {
@@ -85,9 +80,9 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
                 }
             }
 
-            var artifact = _objectFactory.Build(artifactType, new PropertyBag(properties)) as T;
+            artifact = _objectFactory.Build(artifactType, new PropertyBag(properties)) as T;
 
-            return HandleReceivedArifact(tenantId, artifact);
+            return artifact != null;
         }
 
         bool TryConvertFormValuesTo(Type targetType, string[] values, out object result)

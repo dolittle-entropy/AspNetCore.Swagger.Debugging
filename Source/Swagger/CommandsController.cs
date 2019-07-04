@@ -21,10 +21,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactController{ICommand}"/> for handling Commands
+    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Commands
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Commands")]
-    public class CommandsController : ArtifactController<ICommand>
+    public class CommandsController : ArtifactControllerBase<ICommand>
     {
         readonly IArtifactTypeMap _artifactTypeMap;
         readonly ICommandCoordinator _commandCoordinator;
@@ -54,15 +54,24 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
             _serializer = serializer;
         }
 
-        /// <inheritdoc/>
-        protected override IActionResult HandleReceivedArifact(TenantId tenantId, ICommand artifact)
+        /// <summary>
+        /// The HTTP method handler
+        /// </summary>
+        /// <param name="path">The fully qualified type name of the command encoded as a path</param>
+        [HttpPost("{*path}")]
+        public IActionResult Handle([FromRoute] string path)
         {
-            var result = _commandCoordinator.Handle(tenantId, artifact);
-            return new ContentResult
+            if (TryResolveTenantAndArtifact(path, HttpContext.Request.Form.ToDictionary(), out var tenantId, out var command))
             {
-                ContentType = "application/json",
-                Content = _serializer.ToJson(result),
-            };
+                var result = _commandCoordinator.Handle(tenantId, command);
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    Content = _serializer.ToJson(result),
+                };
+            }
+            
+            return new BadRequestResult();
         }
     }
 }

@@ -23,10 +23,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactController{ICommand}"/> for handling Queries
+    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Queries
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Queries")]
-    public class QueriesController : ArtifactController<IQuery>
+    public class QueriesController : ArtifactControllerBase<IQuery>
     {
         readonly IArtifactTypeMap _artifactTypeMap;
         readonly IQueryCoordinator _queryCoordinator;
@@ -56,15 +56,24 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
             _serializer = serializer;
         }
 
-        /// <inheritdoc/>
-        protected override IActionResult HandleReceivedArifact(TenantId tenantId, IQuery artifact)
+        /// <summary>
+        /// The HTTP method handler
+        /// </summary>
+        /// <param name="path">The fully qualified type name of the query encoded as a path</param>
+        [HttpGet("{*path}")]
+        public IActionResult Handle([FromRoute] string path)
         {
-            var result = _queryCoordinator.Handle(tenantId, artifact);
-            return new ContentResult
+            if (TryResolveTenantAndArtifact(path, HttpContext.Request.Query.ToDictionary(), out var tenantId, out var query))
             {
-                ContentType = "application/json",
-                Content = _serializer.ToJson(result),
-            };
+                var result = _queryCoordinator.Handle(tenantId, query);
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    Content = _serializer.ToJson(result),
+                };
+            }
+            
+            return new BadRequestResult();
         }
     }
 }
