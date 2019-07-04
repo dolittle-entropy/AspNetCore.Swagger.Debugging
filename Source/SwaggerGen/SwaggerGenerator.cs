@@ -133,7 +133,6 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                 case "Dolittle.Queries":
                     return _queryDocumentGenerator.GetSwagger(documentName, host, basePath, schemes);
                 default:
-                    System.Console.WriteLine($"!!!! Using original Generator !!!!");
                     return _originalGenerator.GetSwagger(documentName, host, basePath, schemes);
             }
         }
