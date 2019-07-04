@@ -25,6 +25,9 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 
         Info _documentInfo;
         string _documentBasePath;
+        bool _isPost;
+        string _parameterLocation;
+        Dictionary<string, Response> _responses;
         Func<PropertyInfo,bool> _documentPropertyFilter;
         IList<IParameter> _documentGlobalParameters;
 
@@ -43,22 +46,32 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         }
 
         /// <inheritdoc/>
-        public void Configure(Info info, string basePath, Func<PropertyInfo,bool> parameterFilter, params IParameter[] globalParameters)
+        public void Configure(Info info, string basePath, string method, Dictionary<string, Response> responses, Func<PropertyInfo,bool> parameterFilter, params IParameter[] globalParameters)
         {
             _documentInfo = info;
             _documentBasePath = basePath;
+            _isPost = method.Equals("POST");
+            _parameterLocation = _isPost ? "formData" : "query";
+            _responses = responses;
             _documentPropertyFilter = parameterFilter;
             _documentGlobalParameters = new List<IParameter>(globalParameters);
 
             var tenantIdParameter = new NonBodyParameter
             {
                 Name = "TenantId",
-                In = "formData",
+                In = _parameterLocation,
                 Required = true,
                 Default = TenantId.Development.Value,
             };
             AddSchemaFor(tenantIdParameter, _schemaRegistry.GetOrRegister(typeof(TenantId)));
             _documentGlobalParameters.Insert(0, tenantIdParameter);
+
+            if (!_responses.ContainsKey("default"))
+            {
+                _responses.Add("default", new Response {
+                    Description = "Unexpected error",
+                });
+            }
         }
 
         /// <inheritdoc/>
@@ -80,10 +93,17 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
             foreach (var path in _artifactMapper.ApiPaths)
             {
                 var tags = new List<string> {{ path.Split('/')[1] }};
+                var pathItem = new PathItem();
+                if (_isPost)
+                {
+                    pathItem.Post = GenerateOperation(_artifactMapper.GetTypeFor(path), tags);
+                }
+                else
+                {
+                    pathItem.Get = GenerateOperation(_artifactMapper.GetTypeFor(path), tags);
 
-                paths.Add(path, new PathItem{
-                    Post = GenerateOperation(_artifactMapper.GetTypeFor(path), tags),
-                });
+                }
+                paths.Add(path, pathItem);
             }
             return paths;
         }
@@ -97,12 +117,13 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                     var parameter = new NonBodyParameter
                     {
                         Name = _.Name,
-                        In = "formData",
+                        In = _parameterLocation,
                         Required = true,
                     };
                     AddSchemaFor(parameter, _schemaRegistry.GetOrRegister(_.PropertyType));
                     return (IParameter)parameter;
                 })).ToList(),
+                Responses = _responses,
             };
         }
 

@@ -21,8 +21,16 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         /// </summary>
         /// <param name="info"><see cref="Info"/> for the document</param>
         /// <param name="basePath">Base path for the operations</param>
+        /// <param name="method">Query method, possible values are "POST" or "GET".</param>
+        /// <param name="responses">Possible responses from the operations</param>
         /// <param name="parameterFilter">A filter for selecting which parameters to show</param>
         /// <param name="globalParameters">A list of <see cref="IParameter"/> that will be prepended to the paramaters of all operations</param>
-        void Configure(Info info, string basePath, Func<PropertyInfo,bool> parameterFilter, params IParameter[] globalParameters);
+        void Configure(
+            Info info,
+            string basePath,
+            string method,
+            Dictionary<string, Response> responses,
+            Func<PropertyInfo,bool> parameterFilter,
+            params IParameter[] globalParameters);
     }
 }

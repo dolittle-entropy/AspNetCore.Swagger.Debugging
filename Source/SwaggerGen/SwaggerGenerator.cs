@@ -68,6 +68,12 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                     Title = "Commands",
                 },
                 "/api/Dolittle/Debugging/Swagger/Commands",
+                "POST",
+                new Dictionary<string, Response> {
+                    {"200", new Response {
+                        Description = "Result of command handling"
+                    }},
+                },
                 _ => true
             );
             _eventDocumentGenerator.Configure(
@@ -76,8 +82,14 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                     Title = "Events",
                 },
                 "/api/Dolittle/Debugging/Swagger/Events",
+                "POST",
+                new Dictionary<string, Response> {
+                    {"200", new Response {
+                        Description = "Event was successfully injected into the Event Store"
+                    }},
+                },
                 _ => true,
-                CreateFormParameterWithNameAndType("EventSourceId", typeof(EventSourceId))
+                CreateFormParameterWithNameAndType("EventSourceId", "formData", typeof(EventSourceId))
             );
             _queryDocumentGenerator.Configure(
                 new Info
@@ -85,16 +97,22 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                     Title = "Queries",
                 },
                 "/api/Dolittle/Debugging/Swagger/Queries",
+                "GET",
+                new Dictionary<string, Response> {
+                    {"200", new Response {
+                        Description = "Result of query execution"
+                    }},
+                },
                 _ => !_.Name.Equals("Query")
             );
         }
 
-        IParameter CreateFormParameterWithNameAndType(string Name, Type type)
+        IParameter CreateFormParameterWithNameAndType(string Name, string Location, Type type)
         {
             var parameter = new NonBodyParameter
             {
                 Name = Name,
-                In = "formData",
+                In = Location,
                 Required = true,
             };
             var schema = _schemaRegistryFactory.Create().GetOrRegister(type);
