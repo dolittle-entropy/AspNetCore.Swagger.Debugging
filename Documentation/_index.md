@@ -5,6 +5,8 @@ keywords: Debugging Swagger
 author: jakhog
 weight: 2
 repository: https://github.com/dolittle-interaction/AspNetCore.Debugging.Swagger
+aliases:
+    - /interaction/aspnetcore.debugging.swagger/
 ---
 [Swagger](https://swagger.io) is a great tool for interacting with APIs on a webserver without the need for a custom UI. To enable the use of Swagger with a Dolittle AspNetCore Bounded Context, we expose special APIs and generate [OpenAPI](https://swagger.io/specification/v2/) documents based on Commands, Queries and Events in your bounded context. This allows for quicker development of the business logic and simplifies working on the domain and readmodels separately. Please note however that __these APIs are only ment as a development tool__ and not for production use.
 
