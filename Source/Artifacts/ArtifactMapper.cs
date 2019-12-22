@@ -1,7 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -10,15 +8,15 @@ using Dolittle.Applications;
 using Dolittle.Applications.Configuration;
 using Dolittle.Artifacts;
 using Dolittle.Artifacts.Configuration;
-using Dolittle.Types;
 
 namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
 {
     /// <summary>
-    /// Implementation of an <see cref="IArtifactMapper{T}"/>
+    /// Implementation of an <see cref="IArtifactMapper{T}"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ArtifactMapper<T> : IArtifactMapper<T> where T : class
+    /// <typeparam name="T">Type of artifact.</typeparam>
+    public class ArtifactMapper<T> : IArtifactMapper<T>
+        where T : class
     {
         readonly Topology _topology;
         readonly IArtifactTypeMap _artifactTypeMap;
@@ -26,13 +24,15 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
         readonly IDictionary<string, Type> _artifactsByPath;
 
         /// <summary>
-        /// Instanciates an <see cref="ArtifactMapper{T}"/>
+        /// Initializes a new instance of the <see cref="ArtifactMapper{T}"/> class.
         /// </summary>
+        /// <param name="topology"><see cref="Topology"/> configuration.</param>
+        /// <param name="artifacts">The <see cref="ArtifactsConfiguration"/>.</param>
+        /// <param name="artifactTypeMap"><see cref="IArtifactTypeMap"/> for mapping artifacts and types.</param>
         public ArtifactMapper(
             Topology topology,
             ArtifactsConfiguration artifacts,
-            IArtifactTypeMap artifactTypeMap
-        )
+            IArtifactTypeMap artifactTypeMap)
         {
             _topology = topology;
             _artifacts = artifacts;
@@ -41,6 +41,15 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
             _artifactsByPath = new Dictionary<string, Type>();
             BuildMapOfAllCorrespondingArtifacts();
         }
+
+        /// <inheritdoc/>
+        public IEnumerable<string> ApiPaths => _artifactsByPath.Keys;
+
+        /// <inheritdoc/>
+        public Artifact GetArtifactFor(string path) => _artifactTypeMap.GetArtifactFor(GetTypeFor(path));
+
+        /// <inheritdoc/>
+        public Type GetTypeFor(string path) => _artifactsByPath[path];
 
         void BuildMapOfAllCorrespondingArtifacts()
         {
@@ -53,7 +62,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
             }
             else
             {
-                AddFeaturesRecursively(_topology.Features, "");
+                AddFeaturesRecursively(_topology.Features, string.Empty);
             }
         }
 
@@ -69,15 +78,14 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
                         artifacts.EventSources,
                         artifacts.Events,
                         artifacts.Queries,
-                        artifacts.ReadModels
-                    );
+                        artifacts.ReadModels);
                 }
 
                 AddFeaturesRecursively(feature.Value.SubFeatures, $"{prefix}/{feature.Value.Name}");
             }
         }
 
-        void AddArtifacts(string prefix, params IReadOnlyDictionary<ArtifactId,ArtifactDefinition>[] artifactsByTypes)
+        void AddArtifacts(string prefix, params IReadOnlyDictionary<ArtifactId, ArtifactDefinition>[] artifactsByTypes)
         {
             foreach (var artifactByType in artifactsByTypes)
             {
@@ -91,14 +99,5 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.Artifacts
                 }
             }
         }
-
-        /// <inheritdoc/>
-        public IEnumerable<string> ApiPaths => _artifactsByPath.Keys;
-
-        /// <inheritdoc/>
-        public Artifact GetArtifactFor(string path) => _artifactTypeMap.GetArtifactFor(GetTypeFor(path));
-
-        /// <inheritdoc/>
-        public Type GetTypeFor(string path) => _artifactsByPath[path];
     }
 }
