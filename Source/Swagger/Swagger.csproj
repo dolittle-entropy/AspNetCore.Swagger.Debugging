@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../default.props" />
+
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>Dolittle.AspNetCore.Debugging.Swagger</AssemblyName>
   </PropertyGroup>
 
@@ -9,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dolittle.Common" Version="1.*" />
     <PackageReference Include="Dolittle.AspNetCore.Debugging" Version="3.*" />
     <PackageReference Include="Dolittle.Types" Version="4.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
