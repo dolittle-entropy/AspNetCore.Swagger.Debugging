@@ -1,7 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Dolittle.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +11,7 @@ using OriginalSchemaRegistryFactory = Swashbuckle.AspNetCore.SwaggerGen.SchemaRe
 namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
-    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistryFactory" />
+    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistryFactory" />.
     /// </summary>
     public class SchemaRegistryFactory : ISchemaRegistryFactory
     {
@@ -23,16 +21,15 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         readonly IInstancesOf<ICanProvideSwaggerSchemas> _schemaProviders;
 
         /// <summary>
-        /// Instanciates a <see cref="SchemaRegistryFactory"/>
+        /// Initializes a new instance of the <see cref="SchemaRegistryFactory"/> class.
         /// </summary>
-        /// <param name="mvcJsonOptionsAccessor"></param>
-        /// <param name="schemaRegistryOptionsAccessor"></param>
-        /// <param name="schemaProviders"></param>
+        /// <param name="mvcJsonOptionsAccessor"><see cref="IOptions{T}">Options</see> for <see cref="MvcJsonOptions"/>.</param>
+        /// <param name="schemaRegistryOptionsAccessor"><see cref="IOptions{T}">Options</see> for <see cref="SchemaRegistryOptions"/>.</param>
+        /// <param name="schemaProviders"><see cref="IInstancesOf{T}"/> of <see cref="ICanProvideSwaggerSchemas"/>.</param>
         public SchemaRegistryFactory(
             IOptions<MvcJsonOptions> mvcJsonOptionsAccessor,
             IOptions<SchemaRegistryOptions> schemaRegistryOptionsAccessor,
-            IInstancesOf<ICanProvideSwaggerSchemas> schemaProviders
-        )
+            IInstancesOf<ICanProvideSwaggerSchemas> schemaProviders)
         {
             _jsonSerializerSettings = mvcJsonOptionsAccessor.Value.SerializerSettings;
             _schemaRegistryOptions = schemaRegistryOptionsAccessor.Value;
@@ -47,8 +44,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
             return new SchemaRegistry(
                 _originalFactory.Create(),
                 _schemaProviders,
-                new SchemaIdManager(_schemaRegistryOptions.SchemaIdSelector)
-            );
+                new SchemaIdManager(_schemaRegistryOptions.SchemaIdSelector));
         }
     }
 }

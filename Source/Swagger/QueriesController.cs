@@ -1,29 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
 using Dolittle.Artifacts;
-using Dolittle.AspNetCore.Debugging.Commands;
-using Dolittle.AspNetCore.Debugging.Events;
 using Dolittle.AspNetCore.Debugging.Queries;
 using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
-using Dolittle.Commands;
-using Dolittle.Concepts;
-using Dolittle.Events;
 using Dolittle.Logging;
 using Dolittle.PropertyBags;
 using Dolittle.Queries;
-using Dolittle.Runtime.Events;
 using Dolittle.Serialization.Json;
-using Dolittle.Tenancy;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Queries
+    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Queries.
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Queries")]
     public class QueriesController : ArtifactControllerBase<IQuery>
@@ -33,23 +23,22 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         readonly ISerializer _serializer;
 
         /// <summary>
-        /// Instanciates a new <see cref="QueriesController"/>
+        /// Initializes a new instance of the <see cref="QueriesController"/> class.
         /// </summary>
-        /// <param name="logger">The <see cref="ILogger"/> to use</param>
-        /// <param name="artifactTypes"></param>
-        /// <param name="objectFactory"></param>
-        /// <param name="artifactTypeMap"></param>
-        /// <param name="queryCoordinator"></param>
-        /// <param name="serializer"></param>
+        /// <param name="artifactTypes"><see cref="IArtifactMapper{T}"/> for mapping queries.</param>
+        /// <param name="objectFactory"><see cref="IObjectFactory"/> for creating instances of queries.</param>
+        /// <param name="artifactTypeMap"><see cref="IArtifactTypeMap"/> for mapping artifacts to types.</param>
+        /// <param name="queryCoordinator"><see cref="IQueryCoordinator"/> for coordinating execution of queries.</param>
+        /// <param name="serializer">JSON <see cref="ISerializer"/>.</param>
+        /// <param name="logger">The <see cref="ILogger"/> to use.</param>
         public QueriesController(
-            ILogger logger,
             IArtifactMapper<IQuery> artifactTypes,
             IObjectFactory objectFactory,
             IArtifactTypeMap artifactTypeMap,
             IQueryCoordinator queryCoordinator,
-            ISerializer serializer
-        )
-        : base(logger, artifactTypes, objectFactory)
+            ISerializer serializer,
+            ILogger logger)
+            : base(artifactTypes, objectFactory, logger)
         {
             _artifactTypeMap = artifactTypeMap;
             _queryCoordinator = queryCoordinator;
@@ -57,9 +46,10 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         }
 
         /// <summary>
-        /// The HTTP method handler
+        /// [GET] Action for performing a query / getting result from a query.
         /// </summary>
-        /// <param name="path">The fully qualified type name of the query encoded as a path</param>
+        /// <param name="path">The fully qualified type name of the query encoded as a path.</param>
+        /// <returns><see cref="IActionResult"/> holding the query result.</returns>
         [HttpGet("{*path}")]
         public IActionResult Handle([FromRoute] string path)
         {
@@ -72,7 +62,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
                     Content = _serializer.ToJson(result),
                 };
             }
-            
+
             return new BadRequestResult();
         }
     }

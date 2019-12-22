@@ -1,9 +1,6 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
 using Dolittle.AspNetCore.Debugging.Events;
 using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Concepts;
@@ -11,13 +8,12 @@ using Dolittle.Events;
 using Dolittle.Logging;
 using Dolittle.PropertyBags;
 using Dolittle.Runtime.Events;
-using Dolittle.Tenancy;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactControllerBase{IEvent}"/> for handling Events
+    /// An implementation of an <see cref="ArtifactControllerBase{IEvent}"/> for handling Events.
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Events")]
     public class EventsController : ArtifactControllerBase<IEvent>
@@ -25,37 +21,37 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         readonly IEventInjector _eventInjector;
 
         /// <summary>
-        /// Instanciates a new <see cref="EventsController"/>
+        /// Initializes a new instance of the <see cref="EventsController"/> class.
         /// </summary>
-        /// <param name="logger">The <see cref="ILogger"/> to use</param>
-        /// <param name="artifactTypes"></param>
-        /// <param name="objectFactory"></param>
-        /// <param name="eventInjector"></param>
+        /// <param name="artifactTypes"><see cref="IArtifactMapper{T}"/> for mapping events.</param>
+        /// <param name="objectFactory"><see cref="IObjectFactory"/> for creating instances of events.</param>
+        /// <param name="eventInjector"><see cref="IEventInjector"/> for injecting events.</param>
+        /// <param name="logger">The <see cref="ILogger"/> to use.</param>
         public EventsController(
-            ILogger logger,
             IArtifactMapper<IEvent> artifactTypes,
             IObjectFactory objectFactory,
-            IEventInjector eventInjector
-        )
-        : base(logger, artifactTypes, objectFactory)
+            IEventInjector eventInjector,
+            ILogger logger)
+            : base(artifactTypes, objectFactory, logger)
         {
             _eventInjector = eventInjector;
         }
 
         /// <summary>
-        /// The HTTP method handler
+        /// [POST] Action for injecting events.
         /// </summary>
-        /// <param name="path">The fully qualified type name of the event encoded as a path</param>
+        /// <param name="path">The fully qualified type name of the event encoded as a path.</param>
+        /// <returns><see cref="IActionResult"/> holding the result from injecting the event.</returns>
         [HttpPost("{*path}")]
         public IActionResult Handle([FromRoute] string path)
         {
             if (TryResolveTenantAndArtifact(path, HttpContext.Request.Form.ToDictionary(), out var tenantId, out var @event))
             {
-                var eventSourceId = HttpContext.Request.Form["EventSourceId"].First().ParseTo(typeof(EventSourceId)) as EventSourceId;
+                var eventSourceId = HttpContext.Request.Form["EventSourceId"][0].ParseTo(typeof(EventSourceId)) as EventSourceId;
                 _eventInjector.InjectEvent(tenantId, eventSourceId, @event);
                 return Ok();
             }
-            
+
             return new BadRequestResult();
         }
     }

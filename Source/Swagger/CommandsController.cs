@@ -1,27 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
 using Dolittle.Artifacts;
 using Dolittle.AspNetCore.Debugging.Commands;
-using Dolittle.AspNetCore.Debugging.Events;
 using Dolittle.AspNetCore.Debugging.Swagger.Artifacts;
 using Dolittle.Commands;
-using Dolittle.Concepts;
-using Dolittle.Events;
 using Dolittle.Logging;
 using Dolittle.PropertyBags;
-using Dolittle.Runtime.Events;
 using Dolittle.Serialization.Json;
-using Dolittle.Tenancy;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolittle.AspNetCore.Debugging.Swagger
 {
     /// <summary>
-    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Commands
+    /// An implementation of an <see cref="ArtifactControllerBase{ICommand}"/> for handling Commands.
     /// </summary>
     [Route("api/Dolittle/Debugging/Swagger/Commands")]
     public class CommandsController : ArtifactControllerBase<ICommand>
@@ -31,23 +23,22 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         readonly ISerializer _serializer;
 
         /// <summary>
-        /// Instanciates a new <see cref="CommandsController"/>
+        /// Initializes a new instance of the <see cref="CommandsController"/> class.
         /// </summary>
-        /// <param name="logger">The <see cref="ILogger"/> to use</param>
-        /// <param name="artifactTypes"></param>
-        /// <param name="objectFactory"></param>
-        /// <param name="artifactTypeMap"></param>
-        /// <param name="commandCoordinator"></param>
-        /// <param name="serializer"></param>
+        /// <param name="artifactTypes"><see cref="IArtifactMapper{T}"/> for mapping commands.</param>
+        /// <param name="objectFactory"><see cref="IObjectFactory"/> for creating instances of commands.</param>
+        /// <param name="artifactTypeMap"><see cref="IArtifactTypeMap"/> for mapping artifacts to types.</param>
+        /// <param name="commandCoordinator"><see cref="ICommandCoordinator"/> for coordinating commands.</param>
+        /// <param name="serializer">JSON <see cref="ISerializer"/>.</param>
+        /// <param name="logger">The <see cref="ILogger"/> to use.</param>
         public CommandsController(
-            ILogger logger,
             IArtifactMapper<ICommand> artifactTypes,
             IObjectFactory objectFactory,
             IArtifactTypeMap artifactTypeMap,
             ICommandCoordinator commandCoordinator,
-            ISerializer serializer
-        )
-        : base(logger, artifactTypes, objectFactory)
+            ISerializer serializer,
+            ILogger logger)
+            : base(artifactTypes, objectFactory, logger)
         {
             _artifactTypeMap = artifactTypeMap;
             _commandCoordinator = commandCoordinator;
@@ -55,9 +46,10 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         }
 
         /// <summary>
-        /// The HTTP method handler
+        /// [POST] ACtion for handling a command.
         /// </summary>
-        /// <param name="path">The fully qualified type name of the command encoded as a path</param>
+        /// <param name="path">The fully qualified type name of the command encoded as a path.</param>
+        /// <returns><see cref="IActionResult"/> holding the command result.</returns>
         [HttpPost("{*path}")]
         public IActionResult Handle([FromRoute] string path)
         {
@@ -70,7 +62,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
                     Content = _serializer.ToJson(result),
                 };
             }
-            
+
             return new BadRequestResult();
         }
     }

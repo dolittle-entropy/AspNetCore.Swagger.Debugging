@@ -1,7 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
-    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistry" />
+    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SchemaRegistry" />.
     /// </summary>
     public class SchemaRegistry : ISchemaRegistry
     {
@@ -21,16 +19,15 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         readonly SchemaIdManager _idManager;
 
         /// <summary>
-        /// Instanciates a <see cref="SchemaRegistry"/>
+        /// Initializes a new instance of the <see cref="SchemaRegistry"/> class.
         /// </summary>
-        /// <param name="originalRegistry"></param>
-        /// <param name="providers"></param>
-        /// <param name="idManager"></param>
+        /// <param name="originalRegistry"><see cref="ISchemaRegistry"/> for holding schemas.</param>
+        /// <param name="providers"><see cref="IInstancesOf{T}"/> of <see cref="ICanProvideSwaggerSchemas"/>.</param>
+        /// <param name="idManager"><see cref="SchemaIdManager"/> for managing schemaa identifiers.</param>
         public SchemaRegistry(
             ISchemaRegistry originalRegistry,
             IInstancesOf<ICanProvideSwaggerSchemas> providers,
-            SchemaIdManager idManager
-        )
+            SchemaIdManager idManager)
         {
             _originalRegistry = originalRegistry;
             _providers = providers;
@@ -50,6 +47,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                     return provider.ProvideFor(type, this, _idManager);
                 }
             }
+
             return _originalRegistry.GetOrRegister(type);
         }
     }

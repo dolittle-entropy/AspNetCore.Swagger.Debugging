@@ -1,7 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +16,7 @@ using OriginalSwaggerGenerator = Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenera
 namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
-    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>
+    /// Dolittle overload of <see cref="Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>.
     /// </summary>
     public class SwaggerGenerator : ISwaggerProvider
     {
@@ -31,22 +29,21 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         readonly OriginalSwaggerGenerator _originalGenerator;
 
         /// <summary>
-        /// Instanciates a <see cref="SwaggerGenerator"/>
+        /// Initializes a new instance of the <see cref="SwaggerGenerator"/> class.
         /// </summary>
-        /// <param name="apiDescriptionsProvider"></param>
-        /// <param name="schemaRegistryFactory"></param>
-        /// <param name="optionsAccessor"></param>
-        /// <param name="eventDocumentGenerator"></param>
-        /// <param name="commandDocumentGenerator"></param>
-        /// <param name="queryDocumentGenerator"></param>
+        /// <param name="apiDescriptionsProvider"><see cref="IApiDescriptionGroupCollectionProvider"/> for providing API descriptions.</param>
+        /// <param name="schemaRegistryFactory"><see cref="ISchemaRegistryFactory"/> for creating schema registries.</param>
+        /// <param name="optionsAccessor"><see cref="IOptions{T}"/> for <see cref="SwaggerGeneratorOptions"/>.</param>
+        /// <param name="eventDocumentGenerator"><see cref="IDocumentGenerator{T}"/> for <see cref="IEvent"/>.</param>
+        /// <param name="commandDocumentGenerator"><see cref="IDocumentGenerator{T}"/> for <see cref="ICommand"/>.</param>
+        /// <param name="queryDocumentGenerator"><see cref="IDocumentGenerator{T}"/> for <see cref="IQuery"/>.</param>
         public SwaggerGenerator(
             IApiDescriptionGroupCollectionProvider apiDescriptionsProvider,
             ISchemaRegistryFactory schemaRegistryFactory,
             IOptions<SwaggerGeneratorOptions> optionsAccessor,
             IDocumentGenerator<IEvent> eventDocumentGenerator,
             IDocumentGenerator<ICommand> commandDocumentGenerator,
-            IDocumentGenerator<IQuery> queryDocumentGenerator
-        )
+            IDocumentGenerator<IQuery> queryDocumentGenerator)
         {
             _apiDescriptionsProvider = apiDescriptionsProvider;
             _schemaRegistryFactory = schemaRegistryFactory;
@@ -58,67 +55,6 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
             ConfigureGenerators();
 
             _originalGenerator = new OriginalSwaggerGenerator(_apiDescriptionsProvider, _schemaRegistryFactory, _options);
-        }
-
-        void ConfigureGenerators()
-        {
-            _commandDocumentGenerator.Configure(
-                new Info
-                {
-                    Title = "Commands",
-                },
-                "/api/Dolittle/Debugging/Swagger/Commands",
-                "POST",
-                new Dictionary<string, Response> {
-                    {"200", new Response {
-                        Description = "Result of command handling"
-                    }},
-                },
-                _ => true
-            );
-            _eventDocumentGenerator.Configure(
-                new Info
-                {
-                    Title = "Events",
-                },
-                "/api/Dolittle/Debugging/Swagger/Events",
-                "POST",
-                new Dictionary<string, Response> {
-                    {"200", new Response {
-                        Description = "Event was successfully injected into the Event Store"
-                    }},
-                },
-                _ => true,
-                CreateFormParameterWithNameAndType("EventSourceId", "formData", typeof(EventSourceId))
-            );
-            _queryDocumentGenerator.Configure(
-                new Info
-                {
-                    Title = "Queries",
-                },
-                "/api/Dolittle/Debugging/Swagger/Queries",
-                "GET",
-                new Dictionary<string, Response> {
-                    {"200", new Response {
-                        Description = "Result of query execution"
-                    }},
-                },
-                _ => !_.Name.Equals("Query")
-            );
-        }
-
-        IParameter CreateFormParameterWithNameAndType(string Name, string Location, Type type)
-        {
-            var parameter = new NonBodyParameter
-            {
-                Name = Name,
-                In = Location,
-                Required = true,
-            };
-            var schema = _schemaRegistryFactory.Create().GetOrRegister(type);
-            parameter.Type = schema.Type;
-            parameter.Format = schema.Format;
-            return parameter;
         }
 
         /// <inheritdoc/>
@@ -135,6 +71,81 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                 default:
                     return _originalGenerator.GetSwagger(documentName, host, basePath, schemes);
             }
+        }
+
+        void ConfigureGenerators()
+        {
+            _commandDocumentGenerator.Configure(
+                new Info
+                {
+                    Title = "Commands",
+                },
+                "/api/Dolittle/Debugging/Swagger/Commands",
+                "POST",
+                new Dictionary<string, Response>
+                {
+                    {
+                        "200",
+                        new Response
+                        {
+                            Description = "Result of command handling"
+                        }
+                    },
+                },
+                _ => true);
+
+            _eventDocumentGenerator.Configure(
+                new Info
+                {
+                    Title = "Events",
+                },
+                "/api/Dolittle/Debugging/Swagger/Events",
+                "POST",
+                new Dictionary<string, Response>
+                {
+                    {
+                        "200",
+                        new Response
+                        {
+                            Description = "Event was successfully injected into the Event Store"
+                        }
+                    },
+                },
+                _ => true,
+                CreateFormParameterWithNameAndType("EventSourceId", "formData", typeof(EventSourceId)));
+
+            _queryDocumentGenerator.Configure(
+                new Info
+                {
+                    Title = "Queries",
+                },
+                "/api/Dolittle/Debugging/Swagger/Queries",
+                "GET",
+                new Dictionary<string, Response>
+                {
+                    {
+                        "200",
+                        new Response
+                        {
+                            Description = "Result of query execution"
+                        }
+                    },
+                },
+                _ => !_.Name.Equals("Query", StringComparison.InvariantCulture));
+        }
+
+        IParameter CreateFormParameterWithNameAndType(string name, string location, Type type)
+        {
+            var parameter = new NonBodyParameter
+            {
+                Name = name,
+                In = location,
+                Required = true,
+            };
+            var schema = _schemaRegistryFactory.Create().GetOrRegister(type);
+            parameter.Type = schema.Type;
+            parameter.Format = schema.Format;
+            return parameter;
         }
     }
 }

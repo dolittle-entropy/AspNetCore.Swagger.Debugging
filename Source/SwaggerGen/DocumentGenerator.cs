@@ -1,7 +1,5 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -15,10 +13,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 {
     /// <summary>
-    /// An implementation of <see cref="IDocumentGenerator{T}"/>
+    /// An implementation of <see cref="IDocumentGenerator{T}"/>.
     /// </summary>
-    /// <typeparam name="T">The artifact type</typeparam>
-    public class DocumentGenerator<T> : IDocumentGenerator<T> where T : class
+    /// <typeparam name="T">The artifact type.</typeparam>
+    public class DocumentGenerator<T> : IDocumentGenerator<T>
+        where T : class
     {
         readonly IArtifactMapper<T> _artifactMapper;
         readonly ISchemaRegistry _schemaRegistry;
@@ -28,29 +27,28 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
         bool _isPost;
         string _parameterLocation;
         Dictionary<string, Response> _responses;
-        Func<PropertyInfo,bool> _documentPropertyFilter;
+        Func<PropertyInfo, bool> _documentPropertyFilter;
         IList<IParameter> _documentGlobalParameters;
 
         /// <summary>
-        /// Instanciates a new <see cref="DocumentGenerator{T}"/>
+        /// Initializes a new instance of the <see cref="DocumentGenerator{T}"/> class.
         /// </summary>
-        /// <param name="artifactMapper"></param>
-        /// <param name="schemaRegistryFactory"></param>
+        /// <param name="artifactMapper"><see cref="IArtifactMapper{T}"/> for mapping artifacts.</param>
+        /// <param name="schemaRegistryFactory"><see cref="ISchemaRegistryFactory"/> for creating schemas.</param>
         public DocumentGenerator(
             IArtifactMapper<T> artifactMapper,
-            ISchemaRegistryFactory schemaRegistryFactory
-        )
+            ISchemaRegistryFactory schemaRegistryFactory)
         {
             _artifactMapper = artifactMapper;
             _schemaRegistry = schemaRegistryFactory.Create();
         }
 
         /// <inheritdoc/>
-        public void Configure(Info info, string basePath, string method, Dictionary<string, Response> responses, Func<PropertyInfo,bool> parameterFilter, params IParameter[] globalParameters)
+        public void Configure(Info info, string basePath, string method, Dictionary<string, Response> responses, Func<PropertyInfo, bool> parameterFilter, params IParameter[] globalParameters)
         {
             _documentInfo = info;
             _documentBasePath = basePath;
-            _isPost = method.Equals("POST");
+            _isPost = method.Equals("POST", StringComparison.InvariantCulture);
             _parameterLocation = _isPost ? "formData" : "query";
             _responses = responses;
             _documentPropertyFilter = parameterFilter;
@@ -68,7 +66,8 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
 
             if (!_responses.ContainsKey("default"))
             {
-                _responses.Add("default", new Response {
+                _responses.Add("default", new Response
+                {
                     Description = "Unexpected error",
                 });
             }
@@ -83,7 +82,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                 BasePath = _documentBasePath,
                 Paths = GeneratePaths(),
                 Definitions = _schemaRegistry.Definitions,
-                Consumes = new List<string> {{"multipart/form-data"}},
+                Consumes = new List<string> { { "multipart/form-data" } },
             };
         }
 
@@ -92,7 +91,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
             var paths = new Dictionary<string, PathItem>();
             foreach (var path in _artifactMapper.ApiPaths)
             {
-                var tags = new List<string> {{ path.Split('/')[1] }};
+                var tags = new List<string> { { path.Split('/')[1] } };
                 var pathItem = new PathItem();
                 if (_isPost)
                 {
@@ -101,10 +100,11 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
                 else
                 {
                     pathItem.Get = GenerateOperation(_artifactMapper.GetTypeFor(path), tags);
-
                 }
+
                 paths.Add(path, pathItem);
             }
+
             return paths;
         }
 
@@ -113,7 +113,8 @@ namespace Dolittle.AspNetCore.Debugging.Swagger.SwaggerGen
             return new Operation
             {
                 Tags = tags,
-                Parameters = _documentGlobalParameters.Concat(artifactType.GetProperties().Where(_documentPropertyFilter).Select(_ => {
+                Parameters = _documentGlobalParameters.Concat(artifactType.GetProperties().Where(_documentPropertyFilter).Select(_ =>
+                {
                     var parameter = new NonBodyParameter
                     {
                         Name = _.Name,
