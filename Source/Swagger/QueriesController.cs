@@ -55,7 +55,7 @@ namespace Dolittle.AspNetCore.Debugging.Swagger
         {
             if (TryResolveTenantAndArtifact(path, HttpContext.Request.Query.ToDictionary(), out var tenantId, out var query))
             {
-                var result = _queryCoordinator.Handle(tenantId, query);
+                var result = _queryCoordinator.Execute(tenantId, query);
                 return new ContentResult
                 {
                     ContentType = "application/json",
