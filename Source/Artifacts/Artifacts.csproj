@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dolittle.SDK.Applications.Configuration" Version="4.*" />
-    <PackageReference Include="Dolittle.SDK.Artifacts.Configuration" Version="4.*" />
+    <PackageReference Include="Dolittle.SDK.Applications.Configuration" Version="$(SDKVersion)" />
+    <PackageReference Include="Dolittle.SDK.Artifacts.Configuration" Version="$(SDKVersion)" />
   </ItemGroup>
 </Project>

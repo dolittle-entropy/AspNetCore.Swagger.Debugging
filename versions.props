@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <FundamentalsVersion>4.*</FundamentalsVersion>
+        <RuntimeVersion>4.*</RuntimeVersion>
+        <SDKVersion>4.*</SDKVersion>
+        <AspNetCoreVersion>7.*</AspNetCoreVersion>
+        <AspNetCoreDebuggingVersion>3.*</AspNetCoreDebuggingVersion>
+    </PropertyGroup>
+</Project>

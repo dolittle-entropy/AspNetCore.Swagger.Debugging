@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dolittle.AspNetCore.Debugging" Version="3.*" />
-    <PackageReference Include="Dolittle.Types" Version="4.*" />
+    <PackageReference Include="Dolittle.AspNetCore.Debugging" Version="$(AspNetCoreDebuggingVersion)" />
+    <PackageReference Include="Dolittle.Types" Version="$(FundamentalsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="4.0.1" />
