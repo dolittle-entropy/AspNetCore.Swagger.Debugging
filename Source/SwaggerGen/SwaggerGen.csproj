@@ -10,11 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dolittle.SDK.Commands" Version="4.*" />
-    <PackageReference Include="Dolittle.Runtime.Events" Version="4.*" />
-    <PackageReference Include="Dolittle.Runtime.Queries" Version="4.*" />
-    <PackageReference Include="Dolittle.DependencyInversion" Version="4.*" />
-    <PackageReference Include="Dolittle.Types" Version="4.*" />
+    <PackageReference Include="Dolittle.SDK.Commands" Version="$(SDKVersion)" />
+    <PackageReference Include="Dolittle.Runtime.Events" Version="$(RuntimeVersion)" />
+    <PackageReference Include="Dolittle.Runtime.Queries" Version="$(RuntimeVersion)" />
+    <PackageReference Include="Dolittle.DependencyInversion" Version="$(FundamentalsVersion)" />
+    <PackageReference Include="Dolittle.Types" Version="$(FundamentalsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
   </ItemGroup>
